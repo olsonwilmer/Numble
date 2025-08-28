@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Numble 🎲</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    body {
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .game-card {
+      max-width: 400px;
+      width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    .btn-custom {
+      border-radius: 50px;
+      font-size: 1.2rem;
+      padding: 10px 20px;
+    }
+    .problem {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="card game-card p-4 text-center bg-light">
+    <h1 class="mb-3">Numble 🎲</h1>
+    
+    <div class="mb-3">
+      <label for="operation" class="form-label">Choose Operation</label>
+      <select id="operation" class="form-select">
+        <option value="add">Addition ➕</option>
+        <option value="sub">Subtraction ➖</option>
+        <option value="mul">Multiplication ✖️</option>
+        <option value="div">Division ➗</option>
+      </select>
+    </div>
+    
+    <div class="mb-3">
+      <label for="difficulty" class="form-label">Choose Difficulty</label>
+      <select id="difficulty" class="form-select">
+        <option value="easy">Easy 🌱</option>
+        <option value="medium">Medium 🌟</option>
+        <option value="hard">Hard 🔥</option>
+      </select>
+    </div>
+    
+    <button onclick="startGame()" class="btn btn-primary btn-custom mb-3">Start Game</button>
+    
+    <div id="gameArea" style="display:none;">
+      <p class="problem" id="problem"></p>
+      <input type="number" id="answer" class="form-control mb-3" placeholder="Your answer">
+      <button onclick="checkAnswer()" class="btn btn-success btn-custom">Submit</button>
+      <p id="feedback" class="mt-3"></p>
+      <p><strong>Score:</strong> <span id="score">0</span></p>
+    </div>
+  </div>
+
+  <script>
+    let correctAnswer;
+    let score = 0;
+
+    function startGame() {
+      document.getElementById("gameArea").style.display = "block";
+      score = 0;
+      document.getElementById("score").textContent = score;
+      generateProblem();
+    }
+
+    function generateProblem() {
+      const operation = document.getElementById("operation").value;
+      const difficulty = document.getElementById("difficulty").value;
+      
+      let maxNum;
+      if (difficulty === "easy") maxNum = 10;
+      else if (difficulty === "medium") maxNum = 50;
+      else maxNum = 100;
+      
+      const num1 = Math.floor(Math.random() * maxNum) + 1;
+      const num2 = Math.floor(Math.random() * maxNum) + 1;
+      let problemText = "";
+      
+      if (operation === "add") {
+        correctAnswer = num1 + num2;
+        problemText = `${num1} + ${num2}`;
+      } else if (operation === "sub") {
+        correctAnswer = num1 - num2;
+        problemText = `${num1} - ${num2}`;
+      } else if (operation === "mul") {
+        correctAnswer = num1 * num2;
+        problemText = `${num1} × ${num2}`;
+      } else if (operation === "div") {
+        correctAnswer = num1;
+        const product = num1 * num2;
+        problemText = `${product} ÷ ${num2}`;
+      }
+      
+      document.getElementById("problem").textContent = problemText;
+      document.getElementById("answer").value = "";
+      document.getElementById("feedback").textContent = "";
+    }
+
+    function checkAnswer() {
+      const userAnswer = parseInt(document.getElementById("answer").value);
+      if (userAnswer === correctAnswer) {
+        document.getElementById("feedback").textContent = "🎉 Correct!";
+        document.getElementById("feedback").classList.add("text-success");
+        document.getElementById("feedback").classList.remove("text-danger");
+        score++;
+        document.getElementById("score").textContent = score;
+        setTimeout(generateProblem, 1000);
+      } else {
+        document.getElementById("feedback").textContent = "❌ Try again!";
+        document.getElementById("feedback").classList.add("text-danger");
+        document.getElementById("feedback").classList.remove("text-success");
+      }
+    }
+  </script>
+</body>
+</html>
